@@ -24,6 +24,9 @@ except ImportError:
 
 __version__ = "0.11"
 
+MATE_SCORE = 10000
+RESIGN_SCORE = -1000
+
 def upgrade_account(li):
     if li.upgrade_to_bot_account() is None:
         return False
@@ -128,18 +131,31 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                 board = update_board(board, moves[-1])
                 if is_engine_move(game, moves):
                     best_move = None
+                    pos_eval = 0
                     if (engine_cfg["polyglot"] == True and len(moves) <= (engine_cfg["polyglot_max_depth"] * 2) - 1):
                         best_move = get_book_move(board, engine_cfg)
                     if best_move == None:
                         print("searching for move")
                         best_move = engine.search(board, upd["wtime"], upd["btime"], upd["winc"], upd["binc"])
                         info=engine.engine.info_handlers[0].info
-                        score=info["score"][1]
-                        print("best move",best_move,score)
+                        score=info["score"][1]                        
+                        if score[1] == None:
+                            pos_eval = score[0]
+                        else:
+                            mate = score[1]
+                            if mate > 0:
+                            	pos_eval = MATE_SCORE - mate
+                            else:
+                                pos_eval = -MATE_SCORE + mate
+                        print("best move",best_move,pos_eval)
                     else:
                         print("book move found",best_move)
-                    li.make_move(game.id, best_move)
-                    game.abort_in(config.get("abort_time", 20))
+                    if pos_eval > RESIGN_SCORE:
+                        li.make_move(game.id, best_move)
+                        game.abort_in(config.get("abort_time", 20))
+                    else:
+                        print("resign")
+                        li.abort(game.id)
             elif u_type == "ping":
                 if game.should_abort_now():
                     print("    Aborting {} by lack of activity".format(game.url()))
