@@ -1,2 +1,5 @@
+*.bin
+*.exe
+
 config.yml
 __pycache__
