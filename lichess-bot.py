@@ -208,6 +208,7 @@ def get_book_move_from_book(board, engine_cfg, book_name):
                 book_move = reader.choice(board).move()
             else:
                 book_move = reader.find(board, engine_cfg["polyglot_min_weight"]).move()
+                book_move = reader.weighted_choice(board).move()
             return book_move
     except:
         pass
