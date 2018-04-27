@@ -25,7 +25,7 @@ except ImportError:
 __version__ = "0.11"
 
 MATE_SCORE = 10000
-RESIGN_SCORE = -1000
+RESIGN_SCORE = -2000
 
 def upgrade_account(li):
     if li.upgrade_to_bot_account() is None:
