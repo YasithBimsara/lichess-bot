@@ -26,7 +26,7 @@ def load_config():
         engine_sections = [["dir", str, "´dir´ must be a string wrapped in quotes."],
                            ["name", str, "´name´ must be a string wrapped in quotes."],
                            ["polyglot", bool, "´polyglot´ must be a boolean type: true or false."],
-                           ["polyglot_book", str, "´polyglot_book´ must be a string wrapped in quotes."],
+                           ["polyglot_book", list, "´polyglot_book´ must be a list of book names."],
                            ["polyglot_max_depth", int, "`polyglot_max_depth` must be an integer number without quotes."],
                            ["polyglot_min_weight", int, "`polyglot_min_weight` must be an integer number without quotes."],
                            ["polyglot_random", bool, "`polyglot_random` must be a boolean type: true or false."]]
@@ -51,9 +51,14 @@ def load_config():
             raise Exception("The engine %s doesn't have execute (x) permission. Try: chmod +x %s" % (engine, engine))
 
         if (CONFIG["engine"]["polyglot"] == True):
-            book_dir = os.path.join(CONFIG["engine"]["dir"], CONFIG["engine"]["polyglot_book"])
-            if not os.path.isfile(book_dir):
-                raise Exception("The polyglot book %s file does not exist." % book_dir)
-            CONFIG["engine"]["polyglot_book"] = book_dir
+            book_paths=[]
+            for book_name in CONFIG["engine"]["polyglot_book"]:
+                book_dir = os.path.join(CONFIG["engine"]["dir"], book_name)
+                if not os.path.isfile(book_dir):
+                    raise Exception("The polyglot book %s file does not exist." % book_dir)
+                book_paths.append(book_dir)
+
+            CONFIG["engine"]["polyglot_book"] = book_paths
+            print("books",book_paths)
 
     return CONFIG

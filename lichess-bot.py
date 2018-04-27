@@ -176,10 +176,18 @@ def play_first_book_move(game, engine, board, li, config):
 
     return board
 
-
 def get_book_move(board, engine_cfg):
+    for book_name in engine_cfg["polyglot_book"]:
+        book_move=get_book_move_from_book(board, engine_cfg, book_name)
+        if not book_move == None:
+            print("move found in",book_name)
+            return book_move
+
+    return None
+
+def get_book_move_from_book(board, engine_cfg, book_name):	
     try:
-        with chess.polyglot.open_reader(engine_cfg["polyglot_book"]) as reader:
+        with chess.polyglot.open_reader(book_name) as reader:
             if (engine_cfg["polyglot_random"] == True):
                 book_move = reader.choice(board).move()
             else:
