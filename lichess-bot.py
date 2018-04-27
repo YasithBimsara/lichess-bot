@@ -131,7 +131,13 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                     if (engine_cfg["polyglot"] == True and len(moves) <= (engine_cfg["polyglot_max_depth"] * 2) - 1):
                         best_move = get_book_move(board, engine_cfg)
                     if best_move == None:
+                        print("searching for move")
                         best_move = engine.search(board, upd["wtime"], upd["btime"], upd["winc"], upd["binc"])
+                        info=engine.engine.info_handlers[0].info
+                        score=info["score"][1]
+                        print("best move",best_move,score)
+                    else:
+                        print("book move found",best_move)
                     li.make_move(game.id, best_move)
                     game.abort_in(config.get("abort_time", 20))
             elif u_type == "ping":
