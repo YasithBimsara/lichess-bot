@@ -71,7 +71,7 @@ pip install -r requirements.txt
 ## Use multiple configurations
 
 - Apart from config.yml, you can have several configurations ( for different settings/variants/nicks ).
-- You can save these configurations under .yml extension ( for example: bullet.yml, blitz.yml, atomic.yml, nick1.yml, nick2.yml etc. ).
+- You can save these configurations under .yml extension ( for example: `bullet.yml`, `blitz.yml`, `atomic.yml`, `nick1.yml`, `nick2.yml` etc. ).
 - To run the bot with a specific configuration use `python lichess-bot.py --config [configname]`.
 - Example: `python lichess-bot.py --config bullet` ( if you have a `bullet.yml` in your `config` folder).
 
