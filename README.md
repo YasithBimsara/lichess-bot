@@ -14,7 +14,7 @@ virtualenv .venv -p python3 #if this fails you probably need to add Python3 to y
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
-- Create your config file wih `cp config.yml.default config.yml`
+- Copy `config.yml.default` to the config directory and rename it `config.yml`
 - Edit the variants: `supported_variants` and time controls: `supported_tc` from the config.yml as necessary
 
 Windows:
@@ -32,7 +32,7 @@ virtualenv .venv -p python (if this fails you probably need to add Python to you
 ./.venv/Scripts/activate (This may not work on Windows, and in this case you need to execute "Set-ExecutionPolicy RemoteSigned" first and choose "Y" there [you may need to run Powershell as administrator]. After you executed the script, change execution policy back with "Set-ExecutionPolicy Restricted" and pressing "Y")
 pip install -r requirements.txt
 ```
-- Create your config file wih `cp config.yml.default config.yml`
+- Copy `config.yml.default` to the config directory and rename it `config.yml`
 - Edit the variants: `supported_variants` and time controls: `supported_tc` from the config.yml as necessary (use # to disable certain ones)
 
 
@@ -53,6 +53,10 @@ pip install -r requirements.txt
 ## Lichess Upgrade to Bot Account
 **WARNING** This is irreversible. [Read more about upgrading to bot account](https://lichess.org/api#operation/botAccountUpgrade).
 - run `python lichess-bot.py -u`
+- To upgrade for a custom configuration use:
+    `python lichess-bot.py -u --config [configname]`
+  example:
+    `python lichess-bot.py -u --config bullet` ( if you have a `bullet.yml` in your `config` folder)
 
 
 ## LeelaChessZero
@@ -64,6 +68,12 @@ pip install -r requirements.txt
 - You can specify the number of `engine.threads` in the config.yml file as well
 - To start: `python lichess-bot.py`
 
+## Use multiple configurations
+
+- Apart from config.yml, you can have several configurations ( for different settings/variants/nicks ).
+- You can save these configurations under .yml extension ( for example: bullet.yml, blitz.yml, atomic.yml, nick1.yml, nick2.yml etc. ).
+- To run the bot with a specific configuration use `python lichess-bot.py --config [configname]`.
+- Example: `python lichess-bot.py --config bullet` ( if you have a `bullet.yml` in your `config` folder).
 
 # Acknowledgements
 Thanks to the Lichess team, especially T. Alexander Lystad and Thibault Duplessis for working with the LeelaChessZero

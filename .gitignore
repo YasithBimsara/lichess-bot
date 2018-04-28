@@ -3,5 +3,7 @@
 *.json
 *.pgn
 
+/configs
+
 config.yml
 __pycache__
