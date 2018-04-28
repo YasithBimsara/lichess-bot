@@ -22,7 +22,7 @@ try:
 except ImportError:
     from http.client import BadStatusLine as RemoteDisconnected
 
-__version__ = "0.11"
+__version__ = "0.12"
 
 MATE_SCORE = 10000
 RESIGN_SCORE = -2000
