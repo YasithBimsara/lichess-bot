@@ -381,11 +381,13 @@ class BuildInfo():
 					mi=m.to_square+(m.from_square << 6)					
 					if not m.promotion==None:
 						mi+=((m.promotion-1) << 12)
-					mbytes=bytes.fromhex("%0.4x" % mi)										
-					wbytes=bytes.fromhex("%0.4x" % pos.moves[uci].weight)					
+					mbytes=bytes.fromhex("%0.4x" % mi)						
+					weight=pos.moves[uci].weight				
+					wbytes=bytes.fromhex("%0.4x" % weight)					
 					lbytes=bytes.fromhex("%0.8x" % 0)
 					allbytes=zbytes+mbytes+wbytes+lbytes
-					allentries.append(allbytes)
+					if weight>0:
+						allentries.append(allbytes)
 			sorted_weights=sorted(allentries,key=lambda entry:entry[10:12],reverse=True)
 			sorted_entries=sorted(sorted_weights,key=lambda entry:entry[0:8])
 			print("total of {} moves added to book {}".format(len(allentries),self.polyglot_path()))
