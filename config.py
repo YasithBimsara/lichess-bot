@@ -1,9 +1,11 @@
 import yaml
 import os
 import os.path
+import sys
 
-def load_config():
-    with open("./config.yml", 'r') as stream:
+def load_config(config_name):
+    config_path="./configs/{}.yml".format(config_name)
+    with open(config_path, 'r') as stream:
         try:
             CONFIG = yaml.load(stream)
         except Exception as e:

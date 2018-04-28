@@ -261,11 +261,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Play on Lichess with a bot')
     parser.add_argument('-u', action='store_true', help='Add this flag to upgrade your account to a bot account.')
     parser.add_argument('-v', action='store_true', help='Verbose output. Changes log level from INFO to DEBUG.')
+    parser.add_argument('--config', help="Config file name ( default: config.yml )")
     args = parser.parse_args()
 
     logger = logging.basicConfig(level=logging.DEBUG if args.v else logging.INFO)
 
-    CONFIG = load_config()
+    config_name=args.config
+    if config_name==None:
+        config_name="config"
+
+    CONFIG = load_config(config_name)
     li = lichess.Lichess(CONFIG["token"], CONFIG["url"], __version__)
 
     user_profile = li.get_profile()

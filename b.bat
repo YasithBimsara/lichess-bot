@@ -1,1 +1,1 @@
-python lichess-bot.py
+python lichess-bot.py --config %1
