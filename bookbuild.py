@@ -10,6 +10,7 @@ import getopt
 import json
 import chess
 import chess.polyglot
+from io import StringIO
 
 __version__ = "1.0"
 
@@ -52,6 +53,12 @@ def load_json_obj(path):
 def dump_json_obj(path,json_obj,indent=None):
 	with open(path, 'w') as outfile:
 		json.dump(json_obj, outfile, indent=indent)
+
+def me_loss(pgn):
+	game = chess.pgn.read_game(StringIO(pgn))
+	ligame = LichessGame(game)
+	score_me=ligame.score_me()
+	return score_me == 0
 
 class LichessGame():
 	def __init__(self,game,me=USERNAME):
@@ -203,6 +210,9 @@ class BuildInfo():
 
 	def all_games_path(self):
 		return self.name+"_all_games.pgn"
+
+	def lost_games_path(self):
+		return self.name+"_lost_games.pgn"
 
 	def polyglot_path(self):
 		return self.name+".bin"
@@ -356,6 +366,11 @@ class BuildInfo():
 		with open(self.all_games_path(), 'w') as outfile:
 			outfile.write(joined_pgn)
 			print("saved all {} games to {}".format(len(sorted_ids),self.all_games_path()))
+		lost_pgn_list=[pgn for pgn in sorted_pgn_list if me_loss(pgn)]
+		joined_pgn=("\n\n\n").join(lost_pgn_list)+"\n\n\n"
+		with open(self.lost_games_path(), 'w') as outfile:
+			outfile.write(joined_pgn)
+			print("saved lost {} games to {}".format(len(lost_pgn_list),self.lost_games_path()))
 		with open(self.polyglot_path(), 'wb') as outfile:
 			allentries=[]
 			for zobrist_key in self.positions:				
