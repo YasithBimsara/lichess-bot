@@ -15,12 +15,10 @@ virtualenv .venv -p python3 #if this fails you probably need to add Python3 to y
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
-<<<<<<< HEAD
-- Copy `config.yml.default` to the config directory and rename it `config.yml`
-=======
-- Copy `config.yml.default` to `config.yml`
->>>>>>> upstream/master
-- Edit the variants: `supported_variants` and time controls: `supported_tc` from the config.yml as necessary
+
+- Copy `config.yml.default` to the `config` directory and rename it `config.yml`
+
+- Edit the variants: `supported_variants` and time controls: `supported_tc` from the `config.yml` as necessary
 
 ### Windows:
 - Here is a video on how to install the bot: (https://youtu.be/AuncFctntYs). Or you may proceed to the next steps.
@@ -37,12 +35,10 @@ virtualenv .venv -p python (if this fails you probably need to add Python to you
 ./.venv/Scripts/activate (This may not work on Windows, and in this case you need to execute "Set-ExecutionPolicy RemoteSigned" first and choose "Y" there [you may need to run Powershell as administrator]. After you executed the script, change execution policy back with "Set-ExecutionPolicy Restricted" and pressing "Y")
 pip install -r requirements.txt
 ```
-<<<<<<< HEAD
-- Copy `config.yml.default` to the config directory and rename it `config.yml`
-=======
-- Copy `config.yml.default` to `config.yml`
->>>>>>> upstream/master
-- Edit the variants: `supported_variants` and time controls: `supported_tc` from the config.yml as necessary (use # to disable certain ones)
+
+- Copy `config.yml.default` to the `config` directory and rename it `config.yml`
+
+- Edit the variants: `supported_variants` and time controls: `supported_tc` from the `config.yml` as necessary (use # to disable certain ones)
 
 
 ## Lichess OAuth
@@ -73,19 +69,18 @@ pip install -r requirements.txt
 - Extract the weights from the zip archive and rename it to `latest.txt`
 - Download the lczero binary from here: https://github.com/glinscott/leela-chess/releases
 - Copy both the files into the `engine.dir` directory
-- Change the `engine.name` and `engine.weights` keys in config.yml to `lczero` (`lczero.exe` for Windows)  and `latest.txt`
-- You can specify the number of `engine.threads` in the config.yml file as well
+- Change the `engine.name` and `engine.weights` keys in `config.yml` to `lczero` (`lczero.exe` for Windows)  and `latest.txt`
+- You can specify the number of `engine.threads` in the `config.yml` file as well
 - To start: `python lichess-bot.py`
 
 ## Use multiple configurations
 
-- Apart from config.yml, you can have several configurations ( for different settings/variants/nicks ).
+- Apart from `config.yml`, you can have several configurations ( for different settings/variants/nicks ).
 - You can save these configurations under .yml extension ( for example: `bullet.yml`, `blitz.yml`, `atomic.yml`, `nick1.yml`, `nick2.yml` etc. ).
 - To run the bot with a specific configuration use `python lichess-bot.py --config [configname]`.
 - Example: `python lichess-bot.py --config bullet` ( if you have a `bullet.yml` in your `config` folder ).
 
 ## Tips & Tricks
-- You can specify a different config file with the `--config` argument.
 - Here's an example systemd service definition:
 ```
 [Unit]
