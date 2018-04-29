@@ -165,8 +165,8 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                         li.make_move(game.id, best_move)
                         game.abort_in(config.get("abort_time", 20))
                     else:
-                        print("resign")
-                        li.abort(game.id)
+                        print("should resign")
+                        #li.abort(game.id)
             elif u_type == "ping":
                 if game.should_abort_now():
                     print("    Aborting {} by lack of activity".format(game.url()))
