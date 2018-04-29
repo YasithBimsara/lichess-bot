@@ -99,7 +99,15 @@ def start(li, user_profile, engine_factory, config):
     control_stream.terminate()
     control_stream.join()
 
+def game_chat(li,game_id,text,public=False):
+    li.chat(game_id,"player",text)
+    if public:
+        li.chat(game_id,"spectator",text)
+
 def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
+    #game state
+    gg_said = False
+
     updates = li.get_game_stream(game_id).iter_lines()
 
     #Initial response of stream will be the full game info. Store it
@@ -116,6 +124,8 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
         board = play_first_book_move(game, engine, board, li, engine_cfg)
     else:
         board = play_first_move(game, engine, board, li)
+
+    game_chat(li,game.id,"good luck")
 
     try:
         for binary_chunk in updates:
@@ -149,6 +159,9 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                     else:
                         print("book move found",best_move)
                     if pos_eval > RESIGN_SCORE:
+                        if pos_eval > -RESIGN_SCORE and not gg_said:
+                            game_chat(li,game.id,"good game",public=True)
+                            gg_said = True
                         li.make_move(game.id, best_move)
                         game.abort_in(config.get("abort_time", 20))
                     else:
