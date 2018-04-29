@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import chess
 import chess.polyglot
+import sys
 
 ROOT = None
 
@@ -25,7 +26,7 @@ def load(name="default"):
 	global ROOT
 	try:		
 		path = xml_path(name)
-		print("loading xml book {}".format(path))
+		#print("loading xml book {}".format(path))
 		tree = ET.parse(path)
 		ROOT = tree.getroot()
 	except:
@@ -42,24 +43,36 @@ def convert(name="default"):
 		fen = position.attrib["tfen"]+" 1 0"
 		board.set_fen(fen)
 		zobrist_key_hex=get_zobrist_key_hex(board)
-		print("{:<5d} {} {}\n{}".format(cnt+1,zobrist_key_hex,fen,board))
+		#print("{:<5d} {} {}\n{}".format(cnt+1,zobrist_key_hex,fen,board))
 		zbytes=bytes.fromhex(zobrist_key_hex)
 		for movelist in position:
 			for move in movelist:
-				san=move.attrib["s"]
-				annot=move[1].text
-				weight=ANNOT_WEIGHTS[annot]
-				print("{:8} {:4} {:4}".format(san,annot,weight))
-				m=board.parse_san(san)
-				mi=m.to_square+(m.from_square << 6)					
-				if not m.promotion==None:
-					mi+=((m.promotion-1) << 12)
-				mbytes=bytes.fromhex("%0.4x" % mi)										
-				wbytes=bytes.fromhex("%0.4x" % weight)					
-				lbytes=bytes.fromhex("%0.8x" % 0)
-				allbytes=zbytes+mbytes+wbytes+lbytes
-				if weight>0:
-					allentries.append(allbytes)
+				if move.tag=="move":
+					san=move.attrib["s"]
+					annot=move[1].text
+					weight=0
+					if not annot==None:
+						try:
+							weight=ANNOT_WEIGHTS[annot]
+						except:
+							pass
+					else:
+						annot="none"				
+					#print("{:8} {:4} {:4}".format(san,annot,weight))
+					try:
+						m=board.parse_san(san)
+						mi=m.to_square+(m.from_square << 6)					
+						if not m.promotion==None:
+							mi+=((m.promotion-1) << 12)
+						mbytes=bytes.fromhex("%0.4x" % mi)										
+						wbytes=bytes.fromhex("%0.4x" % weight)					
+						lbytes=bytes.fromhex("%0.8x" % 0)
+						allbytes=zbytes+mbytes+wbytes+lbytes
+						if weight>0:
+							allentries.append(allbytes)
+					except:
+						#print("parsing error")
+						pass
 		cnt+=1
 
 	sorted_weights=sorted(allentries,key=lambda entry:entry[10:12],reverse=True)
@@ -70,4 +83,11 @@ def convert(name="default"):
 		for entry in sorted_entries:
 			outfile.write(entry)						
 
-convert()
+name="default"
+
+if len(sys.argv)>1:
+	name=sys.argv[1]
+
+print("converting {}".format(name))
+
+convert(name)
