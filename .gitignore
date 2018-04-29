@@ -2,6 +2,9 @@
 *.exe
 *.json
 *.pgn
+*.xml
+
+/s
 
 /configs/*.yml
 
