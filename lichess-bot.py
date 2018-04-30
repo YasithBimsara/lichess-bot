@@ -161,7 +161,7 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                             if mate > 0:
                             	pos_eval = MATE_SCORE - mate
                             else:
-                                pos_eval = -MATE_SCORE + mate
+                                pos_eval = -MATE_SCORE - mate
                         print("best move",best_move,pos_eval)
                     else:
                         print("book move found",best_move)
