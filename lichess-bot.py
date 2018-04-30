@@ -127,6 +127,8 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
     else:
         board = play_first_move(game, engine, board, li)
 
+    save_fen(config,board)
+
     game_chat(li,game.id,"good luck")
 
     try:
@@ -139,6 +141,9 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                 game.state = upd
                 moves = upd["moves"].split()
                 board = update_board(board, moves[-1])
+
+                save_fen(config, board)
+                
                 if is_engine_move(game, moves):
                     best_move = None
                     pos_eval = 0
@@ -183,8 +188,14 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
         # events fast enough and in this case I believe the exception should be raised
         control_queue.put_nowait({"type": "local_game_done"})
 
+def save_fen(config,board):
+    if not config["save_fen"] == None:
+        fen = board.fen()
+        #print("saving fen to",config["save_fen"])
+        with open(config["save_fen"],"w") as outfile:
+            outfile.write(fen)
 
-def play_first_move(game, engine, board, li):
+def play_first_move(game, engine, board, li):    
     moves = game.state["moves"].split()
     if is_engine_move(game, moves):
         # need to hardcode first movetime since Lichess has 30 sec limit.
