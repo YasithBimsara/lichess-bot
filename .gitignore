@@ -4,9 +4,9 @@
 *.pgn
 *.xml
 
-!engine/default.bin
-!engine/atomicchessbot_white.bin
-!engine/atomicchessbot_black.bin
+!engines/default.bin
+!engines/atomicchessbot_white.bin
+!engines/atomicchessbot_black.bin
 
 /s
 
