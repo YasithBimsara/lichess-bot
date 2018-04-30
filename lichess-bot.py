@@ -188,10 +188,9 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
         # events fast enough and in this case I believe the exception should be raised
         control_queue.put_nowait({"type": "local_game_done"})
 
-def save_fen(config,board):
+def save_fen(config, board):
     if not config["save_fen"] == None:
         fen = board.fen()
-        #print("saving fen to",config["save_fen"])
         with open(config["save_fen"],"w") as outfile:
             outfile.write(fen)
 
