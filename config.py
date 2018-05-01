@@ -61,6 +61,5 @@ def load_config(config_name):
                 book_paths.append(book_dir)
 
             CONFIG["engine"]["polyglot_book"] = book_paths
-            print("books",book_paths)
 
     return CONFIG

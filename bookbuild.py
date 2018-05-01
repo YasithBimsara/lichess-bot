@@ -16,21 +16,26 @@ __version__ = "1.0"
 
 PARSED_OPTS={}
 
-CONFIG = load_config()
-
-USERNAME = CONFIG["username"]
-
 MAX_BOOK_PLIES  = 60
 MAX_VISIT_GAMES = 100000
 MAX_BOOK_WEIGHT = 10000
 
 try:
-	opts, args = getopt.getopt(sys.argv[1:], "d:b", ["force"])
+	opts, args = getopt.getopt(sys.argv[1:], "d:bc:", ["force"])
 	for o,a in opts:
 		PARSED_OPTS[o]=a
 except getopt.GetoptError as err:
 	print(err)
 	sys.exit(2)
+
+config_name = "config"
+
+if "-c" in PARSED_OPTS:
+	config_name=PARSED_OPTS["-c"]
+
+CONFIG = load_config(config_name)
+
+USERNAME = CONFIG["username"]
 
 MINUTE = 60
 HOUR = 60 * MINUTE
@@ -286,7 +291,7 @@ class BuildInfo():
 		if game_id in self.game_ids:
 			print("{} already done".format(game_id))
 		else:
-			print("adding {}".format(game_id))
+			print("{:4d} adding {}".format(cnt,game_id))
 			self.game_ids.append(game_id)
 			if time>self.latest:
 				self.latest=time
@@ -298,6 +303,7 @@ class BuildInfo():
 			game=ligame.game
 			board=game.board()
 			score_me=ligame.score_me()
+			game_score=ligame.score()
 			ply=0
 			zobrist_key=get_zobrist_key_hex(board)
 			fen=board.fen()
@@ -321,9 +327,9 @@ class BuildInfo():
 					if uci in bp.moves:
 						bm=bp.moves[uci]
 					bm.plays+=1					
-					score_corr=2-score_me
-					if board.turn==ligame.color_me():
-						score_corr=score_me
+					score_corr=game_score
+					if board.turn==chess.BLACK:
+						score_corr=2-game_score
 					if (bm.weight+score_corr)>MAX_BOOK_WEIGHT:
 						for muci in bp.moves:
 							if not muci==uci:
