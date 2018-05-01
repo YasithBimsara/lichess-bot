@@ -165,15 +165,16 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                         print("best move",best_move,pos_eval)
                     else:
                         print("book move found",best_move)
-                    if pos_eval > RESIGN_SCORE or True:
+                    if pos_eval > RESIGN_SCORE:
                         if pos_eval > -RESIGN_SCORE and not gg_said:
                             game_chat(li,game.id,"good game",public=True)
                             gg_said = True
                         li.make_move(game.id, best_move)
                         game.abort_in(config.get("abort_time", 20))
                     else:
-                        print("should resign")
-                        #li.abort(game.id)
+                        print("resign")
+                        li.resign_hopeless_game(game.id)
+                        game_chat(li,game.id,"good game",public=True)
             elif u_type == "ping":
                 if game.should_abort_now():
                     print("    Aborting {} by lack of activity".format(game.url()))
