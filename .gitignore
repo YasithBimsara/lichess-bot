@@ -9,6 +9,7 @@
 !engines/atomicchessbot_black.bin
 !engines/AtomicChessBot.bin
 !engines/AtomicChessBotH.bin
+!engines/smartatomic.bin
 !engines/stockfish9.exe
 
 /s
