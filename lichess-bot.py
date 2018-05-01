@@ -173,8 +173,8 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                         game.abort_in(config.get("abort_time", 20))
                     else:
                         print("resign")
-                        li.resign_hopeless_game(game.id)
                         game_chat(li,game.id,"good game",public=True)
+                        li.resign_hopeless_game(game.id)                        
             elif u_type == "ping":
                 if game.should_abort_now():
                     print("    Aborting {} by lack of activity".format(game.url()))
