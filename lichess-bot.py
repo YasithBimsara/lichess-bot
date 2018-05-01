@@ -27,6 +27,7 @@ __version__ = "0.13"
 
 MATE_SCORE = 10000
 RESIGN_SCORE = -2000
+WON_SCORE = 9995
 
 def upgrade_account(li):
     if li.upgrade_to_bot_account() is None:
@@ -166,7 +167,7 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                     else:
                         print("book move found",best_move)
                     if pos_eval > RESIGN_SCORE:
-                        if pos_eval > -RESIGN_SCORE and not gg_said:
+                        if pos_eval > WON_SCORE and not gg_said:
                             game_chat(li,game.id,"good game",public=True)
                             gg_said = True
                         li.make_move(game.id, best_move)
