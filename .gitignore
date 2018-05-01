@@ -8,6 +8,7 @@
 !engines/atomicchessbot_white.bin
 !engines/atomicchessbot_black.bin
 !engines/AtomicChessBot.bin
+!engines/AtomicChessBotH.bin
 !engines/stockfish9.exe
 
 /s
