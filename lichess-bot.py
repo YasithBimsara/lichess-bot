@@ -26,7 +26,7 @@ except ImportError:
 __version__ = "0.13"
 
 MATE_SCORE = 10000
-RESIGN_SCORE = -2000
+RESIGN_SCORE = -9995
 WON_SCORE = 9995
 
 def upgrade_account(li):
@@ -130,7 +130,8 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
 
     save_fen(config,board)
 
-    game_chat(li,game.id,"good luck")
+    if board.fullmove_number == 1:
+        game_chat(li,game.id,"good luck")
 
     try:
         for binary_chunk in updates:
