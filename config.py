@@ -18,9 +18,8 @@ def load_config(config_name):
                     ["good_luck_messages", list, "Chat messages on beginning of game."],
                     ["good_game_message", str, "Chat message on finishing game."],
                     ["engine", dict, "Section `engine` must be a dictionary with indented keys followed by colons.."],
-                    ["max_concurrent_games", int, "Section `max_concurrent_games` must be an integer number without quotes."],
-                    ["supported_tc", list, "Section `supported_tc` must be a list with indented entries starting with dashes.."],
-                    ["supported_modes", list, "Section `supported_modes` must be a list with indented entries starting with dashes.."]]
+                    ["challenge", dict, "Section `challenge` must be a dictionary with indented keys followed by colons.."],
+                    ["max_concurrent_games", int, "Section `max_concurrent_games` must be an integer number without quotes."]]
         for section in sections:
             if section[0] not in CONFIG:
                 raise Exception("Your config.yml does not have required section `{}`.".format(section[0]))

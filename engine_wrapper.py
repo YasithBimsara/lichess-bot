@@ -9,30 +9,31 @@ import subprocess
 def create_engine(config, board):
     cfg = config["engine"]
     engine_path = os.path.join(cfg["dir"], cfg["name"])
-    weights = os.path.join(cfg["dir"], cfg["weights"]) if "weights" in cfg else None
-    threads = cfg.get("threads")
-    gpu = cfg.get("gpu")
-
-    # TODO: ucioptions should probably be a part of the engine subconfig
-    ucioptions = config.get("ucioptions")
     engine_type = cfg.get("protocol")
+    lczero_options = cfg.get("lczero")
     commands = [engine_path]
-    if weights:
-        commands.append("-w")
-        commands.append(weights)
-    if threads:
-        commands.append("-t")
-        commands.append(str(threads))
-    if gpu:
-        commands.append("--gpu")
-        commands.append(str(gpu))
+    if lczero_options:
+        if "weights" in lczero_options:
+            commands.append("-w")
+            commands.append(lczero_options["weights"])
+        if "threads" in lczero_options:
+            commands.append("-t")
+            commands.append(str(lczero_options["threads"]))
+        if "gpu" in lczero_options:
+            commands.append("--gpu")
+            commands.append(str(lczero_options["gpu"]))
+        if "tempdecay" in lczero_options:
+            commands.append("--tempdecay")
+            commands.append(str(lczero_options["tempdecay"]))
+        if lczero_options.get("noise"):
+            commands.append("--noise")
 
     silence_stderr = cfg.get("silence_stderr", False)
 
     if engine_type == "xboard":
-        return XBoardEngine(board, commands, config.get("xboardoptions"), silence_stderr)
+        return XBoardEngine(board, commands, cfg.get("xboard_options"), silence_stderr)
 
-    return UCIEngine(board, commands, config.get("ucioptions"), silence_stderr)
+    return UCIEngine(board, commands, cfg.get("uci_options"), silence_stderr)
 
 
 class EngineWrapper:
