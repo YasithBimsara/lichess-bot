@@ -15,6 +15,8 @@ def load_config(config_name):
         #[section, type, error message]
         sections = [["token", str, "Section `token` must be a string wrapped in quotes."],
                     ["url", str, "Section `url` must be a string wrapped in quotes."],
+                    ["good_luck_messages", list, "Chat messages on beginning of game."],
+                    ["good_game_message", str, "Chat message on finishing game."],
                     ["engine", dict, "Section `engine` must be a dictionary with indented keys followed by colons.."],
                     ["max_concurrent_games", int, "Section `max_concurrent_games` must be an integer number without quotes."],
                     ["supported_tc", list, "Section `supported_tc` must be a list with indented entries starting with dashes.."],

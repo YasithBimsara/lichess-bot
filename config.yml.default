@@ -1,5 +1,8 @@
 token: "xxxxxxxxxxxxxxxx"    # lichess OAuth2 Token
 url: "https://lichess.org/"  # lichess base URL
+good_luck_messages: # messages sent to chat when game begins
+  - "good luck"
+good_game_message: "good game" # message sent to chat when game finishes
 
 engine:                      # engine settings
   dir: "./engines/"          # dir containing engines, relative to this project

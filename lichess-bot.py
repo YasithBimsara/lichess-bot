@@ -131,7 +131,12 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
     save_fen(config,board)
 
     if board.fullmove_number == 1:
-        game_chat(li,game.id,"good luck")
+        game_chat(li,game.id,"playing from > 2200 rated all time lichess book ( contains more than one million moves )",public=True)
+        cnt = 0
+        glms = config["good_luck_messages"]
+        for glm in glms:
+            game_chat(li,game.id,glm, public = ( cnt < ( len(glms) - 1 ) ) )
+            cnt+=1
 
     try:
         for binary_chunk in updates:
@@ -168,8 +173,10 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                     else:
                         print("book move found",best_move)
                     if pos_eval > RESIGN_SCORE:
-                        if pos_eval > WON_SCORE and not gg_said:
-                            game_chat(li,game.id,"good game",public=True)
+                        if pos_eval > WON_SCORE and not gg_said:                        	
+                            ggm = config["good_game_message"]
+                            if not ggm is None:
+                                game_chat(li,game.id, ggm, public=True)
                             gg_said = True
                         li.make_move(game.id, best_move)
                         game.abort_in(config.get("abort_time", 20))
