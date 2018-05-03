@@ -130,8 +130,7 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
 
     save_fen(config,board)
 
-    if board.fullmove_number == 1:
-        game_chat(li,game.id,"playing from > 2200 rated all time lichess book ( contains more than one million moves )",public=True)
+    if board.fullmove_number == 1:        
         cnt = 0
         glms = config["good_luck_messages"]
         for glm in glms:
