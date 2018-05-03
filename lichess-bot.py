@@ -183,7 +183,7 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
 
                     is_inc = ( int(upd["winc"]) > 0 ) or ( int(upd["binc"]) > 0 )
 
-                    if ( pos_eval > RESIGN_SCORE ) and ( is_inc or ( not ( opp_time < TIME_TROUBLE_LIMIT ) ) ):
+                    if ( pos_eval > RESIGN_SCORE ) or ( ( opp_time < TIME_TROUBLE_LIMIT ) and ( not is_inc ) ):
                         if pos_eval > WON_SCORE and not gg_said:                        	
                             ggm = config["good_game_message"]
                             if not ggm is None:
