@@ -23,7 +23,7 @@ try:
 except ImportError:
     from http.client import BadStatusLine as RemoteDisconnected
 
-__version__ = "0.13"
+__version__ = "0.14"
 
 MATE_SCORE = 10000
 RESIGN_SCORE = -9995
@@ -122,11 +122,12 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
     print("+++ {}".format(game))
 
     engine_cfg = config["engine"]
+    polyglot_cfg = engine_cfg.get("polyglot", {})
 
-    if (engine_cfg["polyglot"] == True):
-        board = play_first_book_move(game, engine, board, li, engine_cfg)
-    else:
-        board = play_first_move(game, engine, board, li)
+    if not polyglot_cfg.get("enabled") or not play_first_book_move(game, engine, board, li, config):
+        play_first_move(game, engine, board, li)
+
+    engine.set_time_control(game)
 
     save_fen(config,board)
 
@@ -152,9 +153,11 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                 
                 if is_engine_move(game, moves):
                     best_move = None
+
                     pos_eval = 0
                     if (engine_cfg["polyglot"] == True and len(moves) <= (engine_cfg["polyglot_max_depth"] * 2) - 1):
-                        best_move = get_book_move(board, engine_cfg)
+                        best_move = get_book_move(board, config)
+
                     if best_move == None:
                         print("searching for move")
                         best_move = engine.search(board, upd["wtime"], upd["btime"], upd["winc"], upd["binc"])
@@ -203,50 +206,53 @@ def save_fen(config, board):
         with open(config["save_fen"],"w") as outfile:
             outfile.write(fen)
 
-def play_first_move(game, engine, board, li):    
+def play_first_move(game, engine, board, li):        
     moves = game.state["moves"].split()
-    if is_engine_move(game, moves):
-        # need to hardcode first movetime since Lichess has 30 sec limit.
-        best_move = engine.first_search(game, board, 10000)
+    if is_engine_move(game, moves):    	
+        # need to hardcode first movetime since Lichess has 30 sec limit.        
+        best_move = engine.first_search(board, 10000)
         li.make_move(game.id, best_move)
+        return True
+    return False
 
-    return board
 
-
-def play_first_book_move(game, engine, board, li, config):
+def play_first_book_move(game, engine, board, li, config):    
     moves = game.state["moves"].split()
     if is_engine_move(game, moves):
+        print("playing first book move")
         book_move = get_book_move(board, config)
-        if (book_move != None):
+        if not book_move is None:
             li.make_move(game.id, book_move)
+            return True
         else:
+            print("falling back to engine move")
             return play_first_move(game, engine, board, li)
+    return False
 
-    return board
+def get_book_move(board, config):
+    if not "polyglot" in config["engine"]:
+        return None
 
-def get_book_move(board, engine_cfg):
-    for book_name in engine_cfg["polyglot_book"]:
-        book_move=get_book_move_from_book(board, engine_cfg, book_name)
-        if not book_move == None:
-            print("move found in",book_name)
+    if not config["engine"]["polyglot"]["enabled"]:
+        return None
+
+    for book_path in config["engine"]["polyglot"]["books"]:        
+        book_move=get_book_move_from_book(board, book_path)
+        if not (book_move is None):
+            print("move found in", book_path, book_move)
             return book_move
 
     return None
 
-def get_book_move_from_book(board, engine_cfg, book_name):	
+def get_book_move_from_book(board, book_name):	
     try:
         with chess.polyglot.open_reader(book_name) as reader:
-            if (engine_cfg["polyglot_random"] == True):
-                book_move = reader.choice(board).move()
-            else:
-                book_move = reader.find(board, engine_cfg["polyglot_min_weight"]).move()
-                book_move = reader.weighted_choice(board).move()
+            book_move = reader.weighted_choice(board).move()
             return book_move
     except:
         pass
 
     return None
-
 
 def setup_board(game):
     if game.variant_name.lower() == "chess960":
