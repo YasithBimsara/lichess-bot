@@ -26,8 +26,9 @@ except ImportError:
 __version__ = "1.0.0-rc.1"
 
 MATE_SCORE = 10000
-RESIGN_SCORE = -9995
-WON_SCORE = 9995
+RESIGN_SCORE = -9997
+WON_SCORE = 9997
+TIME_TROUBLE_LIMIT = 3000
 
 def upgrade_account(li):
     if li.upgrade_to_bot_account() is None:
@@ -174,7 +175,15 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                         print("best move",best_move,pos_eval)
                     else:
                         pass
-                    if pos_eval > RESIGN_SCORE:
+
+                    opp_time = int(upd["wtime"])
+
+                    if game.is_white:
+                        opp_time = int(upd["btime"])
+
+                    is_inc = ( int(upd["winc"]) > 0 ) or ( int(upd["binc"]) > 0 )
+
+                    if ( pos_eval > RESIGN_SCORE ) and ( is_inc or ( not ( opp_time < TIME_TROUBLE_LIMIT ) ) ):
                         if pos_eval > WON_SCORE and not gg_said:                        	
                             ggm = config["good_game_message"]
                             if not ggm is None:
