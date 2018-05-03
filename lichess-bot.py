@@ -155,8 +155,7 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                     best_move = None
 
                     pos_eval = 0
-                    if (engine_cfg["polyglot"] == True and len(moves) <= (engine_cfg["polyglot_max_depth"] * 2) - 1):
-                        best_move = get_book_move(board, config)
+                    best_move = get_book_move(board, config)
 
                     if best_move == None:
                         print("searching for move")
@@ -173,7 +172,7 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
                                 pos_eval = -MATE_SCORE - mate
                         print("best move",best_move,pos_eval)
                     else:
-                        print("book move found",best_move)
+                        pass
                     if pos_eval > RESIGN_SCORE:
                         if pos_eval > WON_SCORE and not gg_said:                        	
                             ggm = config["good_game_message"]
