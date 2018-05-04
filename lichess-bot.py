@@ -16,6 +16,8 @@ from conversation import Conversation, ChatLine
 from functools import partial
 from requests.exceptions import ChunkedEncodingError, ConnectionError, HTTPError
 from urllib3.exceptions import ProtocolError
+import threading
+import time
 
 try:
     from http.client import RemoteDisconnected
@@ -108,6 +110,8 @@ def game_chat(li,game_id,text,public=False):
     if public:
         li.chat(game_id,"spectator",text)
 
+watch_engine = {}
+
 @backoff.on_exception(backoff.expo, BaseException, max_time=600)
 def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
     #game state
@@ -139,6 +143,23 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
         for glm in glms:
             game_chat(li,game.id,glm, public = ( cnt < ( len(glms) - 1 ) ) )
             cnt+=1
+
+    watch_engine[game.id] = True
+    def print_engine_info(engine):
+        global watch_engine
+        while watch_engine[game.id]:            
+            try:
+            	if not engine.engine.idle:
+                    info = engine.engine.info_handlers[0].info
+                    score = info["score"][1]
+                    print("{:8s} {:8s}".format(str(score.cp), str(score.mate))," ".join(list(map(chess.Move.uci,info["pv"][1][0:5]))))
+            except:
+                pass
+            time.sleep(1)
+        print("engine watch finished")
+
+    th = threading.Thread(target = print_engine_info, args = (engine,))
+    th.start()
 
     try:
         for binary_chunk in updates:
@@ -205,6 +226,7 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
     finally:
         print("--- {} Game over".format(game.url()))
         engine.quit()
+        watch_engine[game.id] = False
         # This can raise queue.NoFull, but that should only happen if we're not processing
         # events fast enough and in this case I believe the exception should be raised
         control_queue.put_nowait({"type": "local_game_done"})
