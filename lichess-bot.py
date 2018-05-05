@@ -145,20 +145,20 @@ def play_game(li, game_id, control_queue, engine_factory, user_profile, config):
             cnt+=1
 
     watch_engine[game.id] = True
-    def print_engine_info(engine):
+    def print_engine_info(engine, game):
         global watch_engine
         while watch_engine[game.id]:            
             try:
             	if not engine.engine.idle:
                     info = engine.engine.info_handlers[0].info
                     score = info["score"][1]
-                    print("{:8s} {:8s}".format(str(score.cp), str(score.mate))," ".join(list(map(chess.Move.uci,info["pv"][1][0:5]))))
+                    print("{} - {}\n  {:8s} {:8s}".format(game.white, game.black, str(score.cp), str(score.mate))," ".join(list(map(chess.Move.uci,info["pv"][1][0:5]))))
             except:
                 pass
             time.sleep(1)
         print("engine watch finished")
 
-    th = threading.Thread(target = print_engine_info, args = (engine,))
+    th = threading.Thread(target = print_engine_info, args = (engine, game))
     th.start()
 
     try:
