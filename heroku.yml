@@ -1,4 +1,4 @@
-build: malanchess
+build: malanchess2
   docker: Yasith Bimsara
     web: malanchess
 run: lichess.org
