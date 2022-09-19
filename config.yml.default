@@ -1,4 +1,4 @@
-token: "xxxxxxxxxxxxxxxx"    # lichess OAuth2 Token
+token: "lip_3kYkP19Ha4lbCUzgVRKo"    # lichess OAuth2 Token
 url: "https://lichess.org/"  # lichess base URL
 good_luck_messages: # messages sent to chat when game begins
   - "good luck"
@@ -6,7 +6,7 @@ good_game_message: "good game" # message sent to chat when game finishes
 
 engine:                      # engine settings
   dir: "./engines/"          # dir containing engines, relative to this project
-  name: "engine_name"        # binary name of the engine to use
+  name: "AtomicChessBot.bin"        # binary name of the engine to use
   protocol: "uci"            # "uci" or "xboard"
 
   polyglot:
@@ -47,7 +47,7 @@ challenge:                   # incoming challenges
     - standard
 #   - fromPosition
 #   - antichess
-#   - atomic
+    - atomic
 #   - chess960
 #   - crazyhouse
 #   - horde
